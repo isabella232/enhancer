@@ -7,7 +7,7 @@ public class Colors
 	public static String toString(Color inColor)
 	{
 		if (inColor == null) return("#000000");
-		return (String.format("#%x%x%x", inColor.getRed(),inColor.getGreen(),inColor.getBlue()));
+		return (String.format("#%02X%02X%02X", inColor.getRed(),inColor.getGreen(),inColor.getBlue()));
 	}
 	public static Color colorFromString(final String sv)		// reads 0xff1100 or #ff1100 or ff1100
 	{

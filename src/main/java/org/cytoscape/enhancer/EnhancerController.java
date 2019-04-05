@@ -76,9 +76,18 @@ public class EnhancerController implements CytoPanelComponentSelectedListener, S
 		networkView = cyApplicationManager.getCurrentNetworkView();
 
 	}
-	public void enhance(String extract) {
-		System.out.println(extract);
+	public void enhance(String extracted) {
 		
+		String spec = extracted;
+		System.out.println(spec);
+		
+//		CyColumn col = getEnhancerColumn();
+//		if (col == null)
+//		{
+//			col = createColumn();
+//		}
+		//  get VizStyle
+		// set up mapping
 	}
 
 	//-------------------------------------------------------------------------------

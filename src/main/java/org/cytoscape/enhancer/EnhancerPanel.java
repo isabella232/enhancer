@@ -32,6 +32,8 @@ public class EnhancerPanel extends JPanel implements CytoPanelComponent {
 		controller.setEnhancerPanel(this);
 		buildUI();
 		setVisible(true);
+
+		addCategory();
 	}
 
 	//--------------------------------------------------------------------
@@ -60,10 +62,23 @@ public class EnhancerPanel extends JPanel implements CytoPanelComponent {
 	Dimension colorLabDimension = new Dimension(64, lineHeight);
 	Dimension rangeDimension = new Dimension(100, lineHeight);
 	
+	JComboBox<String> graphType;
+
+	
 JPanel makeIntro()
 {
 	JPanel intro = new JPanel();
 	intro.setLayout(new BoxLayout(intro, BoxLayout.PAGE_AXIS));
+	
+	JLabel label0 = new JLabel("A variety of graph types are supported for any node.");
+	LookAndFeelUtil.makeSmall(label0);
+   String types[] = { "Bar Chart", "Circos Chart", "Heat Strip Chart", "Line Chart", "Pie Chart", "Stripe Chart" }; 
+	graphType = new JComboBox<String>(types);
+	graphType.setSelectedItem("Pie Chart");
+//	graphType.setEnabled(false);
+	intro.add(label0);
+	intro.add(graphType);
+	
 	JLabel label1 = new JLabel("Select the columns and colors to assign to the pies.");
 	JLabel label2 = new JLabel("Range can be optionally set to get normalized colors.");
 	intro.add(line(label1));
@@ -71,6 +86,7 @@ JPanel makeIntro()
 	intro.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
 	LookAndFeelUtil.makeSmall(label1);
 	LookAndFeelUtil.makeSmall(label2);
+	intro.add(Box.createVerticalGlue());
 	return intro;
 
 }
@@ -166,13 +182,18 @@ JPanel makeIntro()
 //		optionsPanel.setAlignmentX(0f);
 		categoryParentPanel.setBorder(BorderFactory.createEtchedBorder());
 		categoryParentPanel.setLayout(new BoxLayout(categoryParentPanel, BoxLayout.PAGE_AXIS));
-		categoryParentPanel.add(Box.createRigidArea(new Dimension(10,10)));
+		categoryParentPanel.add(Box.createRigidArea(new Dimension(10,3)));
 		categoryParentPanel.add(makeHeader());
 		add(categoryParentPanel);
 		categoryParentPanel.setMinimumSize(dim4lines);
+		categoryParentPanel.setPreferredSize(dim4lines);
 		add(Box.createRigidArea(new Dimension(20, 20)));
-		add(Box.createGlue());
 
+		add( makeButtonRow());
+		add(Box.createVerticalGlue());		//-------
+	}
+
+	private JPanel makeButtonRow() {
 		//a row of buttons and their actions
 		ActionListener addCategory = new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) 
@@ -193,10 +214,8 @@ JPanel makeIntro()
 		doIt.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) { controller.enhance(extract());  }
 		});
-		add(line(doIt, clearAll, adder));
-		
-		addCategory();
-		add(Box.createVerticalGlue());		//-------
+		return (line(doIt, clearAll, adder));
+				
 	}
 
 	//--------------------------------------------------------------------
@@ -224,22 +243,37 @@ JPanel makeIntro()
 		enableControls(view != null);
 	}
 	//--------------------------------------------------------------------
-	public String extract()
+//http://www.cgl.ucsf.edu/cytoscape/utilities3/enhancedcg.shtml
+//  piechart: attributelist="Values" colorlist="contrasting" labellist="First,Second,Third,Fourth,Fifth"
+//    piechart: attributelist="a,b,c,d" colorlist="red,green,blue,yellow"
+
+    public String extract()
 	{
+		StringBuilder builder = new StringBuilder("piechart: ");
 		// pull the data out of the GUI components
-		StringBuilder builder = new StringBuilder();
+		StringBuilder attributes = new StringBuilder("attributelist=\"");
+		StringBuilder colors = new StringBuilder("colorlist=\"");
+		StringBuilder ranges = new StringBuilder("range=\"");
 		for (ColumnMapPane pane : categories)
 		{
-			builder.append(pane.getColumn());
+			attributes.append(pane.getColumn()).append(",");
 			Color c = pane.getCatColor();
-			builder.append("\t").append(Colors.toString(c)).append("\t");
-			builder.append ("[").append(pane.getMin());
-			builder.append (",").append(pane.getMax()).append ("]\n");
+			colors.append(Colors.toString(c)).append(",");
+			ranges.append(pane.getMin()).append ("-").append(pane.getMax()).append (",");
 		}
-		builder.append ("\n");
+		String attr = changeLastCommaToQuoteSpace(attributes.toString());
+		String colrs = changeLastCommaToQuoteSpace(colors.toString());
+		String rnges = changeLastCommaToQuoteSpace(ranges.toString());
+
+		builder.append(attr).append(colrs).append(rnges);
 		return builder.toString();
 	}
 	
+	private String changeLastCommaToQuoteSpace(String attr) {
+		int idx = attr.lastIndexOf(",");
+		return idx < 0 ? "" : (attr.substring(0, idx) + "\" ");
+		
+	}
 	//--------------------------------------------------------------------
 	// util
 	

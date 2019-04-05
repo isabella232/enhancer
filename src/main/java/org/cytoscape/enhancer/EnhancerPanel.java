@@ -32,7 +32,6 @@ public class EnhancerPanel extends JPanel implements CytoPanelComponent {
 		controller.setEnhancerPanel(this);
 		buildUI();
 		setVisible(true);
-
 		addCategory();
 	}
 
@@ -49,15 +48,17 @@ public class EnhancerPanel extends JPanel implements CytoPanelComponent {
 
 	
 	JButton adder = new JButton("Add");
+	JButton newRing = new JButton("Add Ring");
 	JButton doIt = new JButton("Enhance");		
 	JButton clearAll = new JButton("Clear");
 
 	List<ColumnMapPane> categories = new ArrayList<ColumnMapPane>();
-	int lineHeight = 40;
+	int lineHeight = 32;
 	Dimension dim = new Dimension(400, lineHeight);
-	Dimension dim4lines = new Dimension(400, 4*lineHeight);
+	Dimension dim4lines = new Dimension(400, 6*lineHeight);
+	Dimension introDim = new Dimension(400, 3*lineHeight);
 	Dimension numDimension = new Dimension(40, 30);
-	Dimension columnDimension = new Dimension(140, lineHeight);
+	Dimension columnDimension = new Dimension(240, lineHeight);
 	Dimension colorDimension = new Dimension(24, 24);
 	Dimension colorLabDimension = new Dimension(64, lineHeight);
 	Dimension rangeDimension = new Dimension(100, lineHeight);
@@ -70,23 +71,24 @@ JPanel makeIntro()
 	JPanel intro = new JPanel();
 	intro.setLayout(new BoxLayout(intro, BoxLayout.PAGE_AXIS));
 	
-	JLabel label0 = new JLabel("A variety of graph types are supported for any node.");
-	LookAndFeelUtil.makeSmall(label0);
+	JLabel label0 = new JLabel("A variety of graph types will be available.");
+	JLabel labelA = new JLabel("Only Pie Charts are supported at this point.");
+	LookAndFeelUtil.makeSmall(label0, labelA);
    String types[] = { "Bar Chart", "Circos Chart", "Heat Strip Chart", "Line Chart", "Pie Chart", "Stripe Chart" }; 
 	graphType = new JComboBox<String>(types);
 	graphType.setSelectedItem("Pie Chart");
 //	graphType.setEnabled(false);
-	intro.add(label0);
-	intro.add(graphType);
-	
-	JLabel label1 = new JLabel("Select the columns and colors to assign to the pies.");
-	JLabel label2 = new JLabel("Range can be optionally set to get normalized colors.");
+	intro.add(line(label0));
+	intro.add(line(labelA));
+	intro.add(line(graphType));
+
+	JLabel label1 = new JLabel("Select the columns and colors to assign to the wedges of the pie.");
 	intro.add(line(label1));
-	intro.add(line(label2));
-	intro.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+	intro.setBorder(BorderFactory.createEmptyBorder(6,6,0,6));
 	LookAndFeelUtil.makeSmall(label1);
-	LookAndFeelUtil.makeSmall(label2);
 	intro.add(Box.createVerticalGlue());
+	intro.setPreferredSize(introDim);
+	intro.setMaximumSize(introDim);
 	return intro;
 
 }
@@ -94,18 +96,18 @@ JPanel makeIntro()
 	{
 		JLabel lab1 = new JLabel("Column");
 		JLabel lab2 = new JLabel("Color");
-		JLabel lab3 = new JLabel("Range");
-		LookAndFeelUtil.makeSmall(lab1,lab2, lab3);
+//		JLabel lab3 = new JLabel("Range");
+		LookAndFeelUtil.makeSmall(lab1,lab2);		//, lab3
 		setSizes(lab1, columnDimension);
 		setSizes(lab2, colorLabDimension);
-		setSizes(lab3, rangeDimension);
+//		setSizes(lab3, rangeDimension);
 		JPanel line = new JPanel();
 		setSizes(line, dim);
 		line.setLayout(new BoxLayout(line, BoxLayout.LINE_AXIS));
-		line.add(Box.createHorizontalStrut(20));
+		line.add(Box.createHorizontalStrut(40));
 		line.add(lab1);
 		line.add(lab2);
-		line.add(lab3);
+//		line.add(lab3);
 		return line;
 		
 	}
@@ -117,18 +119,20 @@ JPanel makeIntro()
 		p.setPreferredSize(d);
 		
 	}
+	
+
+	
 	class ColumnMapPane extends JPanel
 	{
 		JComboBox<String> column;
 		ColorMenuButton colorButton;
-		JTextField minVal;
-		JTextField maxVal;
 		String[] colNames = { "Name", "Age", "JurkatScore", "HEKScore" } ;
 			
-		private ColumnMapPane()
+		private ColumnMapPane(List<String> columNameList)
 		{
 			setSizes(this, dim);
-			column = new JComboBox<String>(colNames); 	
+			column = new JComboBox<String>(columNameList.toArray(colNames)); 
+			column.setMaximumRowCount(40);
 			column.setSize(columnDimension);
 			colorButton = new ColorMenuButton();
 			setSizes(colorButton,colorDimension); 
@@ -137,41 +141,24 @@ JPanel makeIntro()
 			colorButton.setPreferredSize(colorDimension);
 			JPanel around = new JPanel();
 			around.add(colorButton);
-//			around.setBorder(BorderFactory.createDashedBorder(Color.blue));
-			//			colorButton.setSize(colorDimension);
-			minVal = new JTextField("0.0"); 				
-			setSizes(minVal,numDimension);
-			maxVal = new JTextField("1.0");				
-			maxVal.setSize(numDimension);
-			setSizes(maxVal,numDimension);
-//			colorButton.setBorder(BorderFactory.createLineBorder(Color.red));
 			setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-			add(column);		add(Box.createHorizontalStrut(20));
-//			JButton b = new JButton("Push");
-//			add(b);
+			add(column);	add(Box.createHorizontalStrut(20));
 			add(around);	add(Box.createHorizontalStrut(20));
-			LookAndFeelUtil.makeSmall(minVal);
-			LookAndFeelUtil.makeSmall(maxVal);
-			JLabel lab1 = new JLabel("Min:");
-			JLabel lab2 = new JLabel("Max:");
-			LookAndFeelUtil.makeSmall(lab1);
-			LookAndFeelUtil.makeSmall(lab2);
-			add(lab1); add(minVal); add(Box.createHorizontalStrut(20));
-			add(lab2); add(maxVal);
-//			setBorder(BorderFactory.createLineBorder(Color.ORANGE));
 		}
 		
 		public String getColumn()	{ return "" + column.getSelectedItem(); }
 		public Color getCatColor()	{ return colorButton.getColor(); }
-		public double getMin()		{	return Double.parseDouble(minVal.getText());			}
-		public double getMax()		{	return Double.parseDouble(maxVal.getText());			}
 	}
 	
 	private void addCategory()	
 	{ 	
-		ColumnMapPane pane = new ColumnMapPane();
-		categories.add(pane);
-		categoryParentPanel.add(pane);
+		List<String> names = controller.getColumnNames();
+		if (!names.isEmpty())
+		{
+			ColumnMapPane pane = new ColumnMapPane(names);
+			categories.add(pane);
+			categoryParentPanel.add(pane);
+		}
 	}
 	//--------------------------------------------------------------------
 	private void buildUI() {
@@ -181,16 +168,26 @@ JPanel makeIntro()
 		categoryParentPanel = new JPanel();
 //		optionsPanel.setAlignmentX(0f);
 		categoryParentPanel.setBorder(BorderFactory.createEtchedBorder());
+		categoryParentPanel.setMinimumSize(dim4lines);
+		categoryParentPanel.setPreferredSize(dim4lines);
 		categoryParentPanel.setLayout(new BoxLayout(categoryParentPanel, BoxLayout.PAGE_AXIS));
 		categoryParentPanel.add(Box.createRigidArea(new Dimension(10,3)));
 		categoryParentPanel.add(makeHeader());
 		add(categoryParentPanel);
-		categoryParentPanel.setMinimumSize(dim4lines);
-		categoryParentPanel.setPreferredSize(dim4lines);
-		add(Box.createRigidArea(new Dimension(20, 20)));
+		add(Box.createRigidArea(new Dimension(20, 8)));
 
+		JLabel label2 = new JLabel("Range can be optionally set to get normalized colors.");
+		LookAndFeelUtil.makeSmall(label2);
+		add(line(label2));
+		add( makeRangePanel());
+		JLabel labelQ = new JLabel("Other arguments:  arcstart, labellist, labelsize, minimumslice, position");
+		JLabel labelR = new JLabel("scale, showlabels, size, valuelist, ybase");
+		LookAndFeelUtil.makeSmall(labelQ, labelR);
+		add(Box.createVerticalGlue());		
+		add(line(labelQ));
+		add(line(labelR));
 		add( makeButtonRow());
-		add(Box.createVerticalGlue());		//-------
+		add(Box.createVerticalGlue());		
 	}
 
 	private JPanel makeButtonRow() {
@@ -203,8 +200,17 @@ JPanel makeIntro()
 				setVisible(true);
 			}
 		};
+		ActionListener addRing = new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) 
+			{
+				addCategory(); 
+				setVisible(false);
+				setVisible(true);
+			}
+		};
 		adder.addActionListener(addCategory);
 
+//		newRing.addActionListener(addRing);
 
 		ActionListener clrAll = new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) { resetOptionsPanel();  }
@@ -214,8 +220,31 @@ JPanel makeIntro()
 		doIt.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) { controller.enhance(extract());  }
 		});
-		return (line(doIt, clearAll, adder));
+		return (line(doIt, clearAll, adder));		//, newRing
 				
+	}
+	JTextField minVal = new JTextField();
+	JTextField maxVal = new JTextField();
+	JLabel lab1 = new JLabel("Min:");
+	JLabel lab2 = new JLabel("Max:");
+
+	private JPanel makeRangePanel()
+	{
+		LookAndFeelUtil.makeSmall(minVal, maxVal, lab1,lab2 );
+		JPanel p = new JPanel();
+		p.setLayout(new BoxLayout(p, BoxLayout.LINE_AXIS));
+		p.add(lab1); p.add(minVal);
+		p.add(Box.createHorizontalStrut(20));
+		p.add(lab2); p.add(maxVal);
+		minVal.setPreferredSize(new Dimension(60, 30));
+		maxVal.setPreferredSize(new Dimension(60, 30));
+		minVal.setMaximumSize(new Dimension(60, 30));
+		maxVal.setMaximumSize(new Dimension(60, 30));
+		p.setMaximumSize(new Dimension(400, 30));
+		p.setPreferredSize(new Dimension(400, 30));
+		p.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+		return p;
+
 	}
 
 	//--------------------------------------------------------------------
@@ -234,7 +263,10 @@ JPanel makeIntro()
 		categoryParentPanel.removeAll();
 		categoryParentPanel.setVisible(false);
 		categoryParentPanel.setVisible(true);
-
+		categories.clear();
+		categoryParentPanel.add(makeHeader());
+		addCategory();			// put one new category back
+			
 	}
 	//--------------------------------------------------------------------
 	public void setCurrentNetwork()
@@ -253,19 +285,23 @@ JPanel makeIntro()
 		// pull the data out of the GUI components
 		StringBuilder attributes = new StringBuilder("attributelist=\"");
 		StringBuilder colors = new StringBuilder("colorlist=\"");
-		StringBuilder ranges = new StringBuilder("range=\"");
 		for (ColumnMapPane pane : categories)
 		{
 			attributes.append(pane.getColumn()).append(",");
 			Color c = pane.getCatColor();
 			colors.append(Colors.toString(c)).append(",");
-			ranges.append(pane.getMin()).append ("-").append(pane.getMax()).append (",");
 		}
 		String attr = changeLastCommaToQuoteSpace(attributes.toString());
 		String colrs = changeLastCommaToQuoteSpace(colors.toString());
-		String rnges = changeLastCommaToQuoteSpace(ranges.toString());
-
-		builder.append(attr).append(colrs).append(rnges);
+		builder.append(attr).append(colrs);
+		String min = minVal.getText().trim();
+		String max= maxVal.getText().trim();
+		if (!(min.isEmpty() || (max.isEmpty())))
+		{
+			StringBuilder ranges = new StringBuilder("range=\"");
+			ranges.append(minVal.getText()).append (",").append(maxVal.getText()).append ("\" ");
+			builder.append(ranges.toString());
+		}
 		return builder.toString();
 	}
 	
@@ -296,6 +332,22 @@ JPanel makeIntro()
 		box.add(subB);
 		box.add(Box.createRigidArea(new Dimension(12,12)));
 		box.add(subC);
+		box.add(Box.createHorizontalGlue());
+//		box.setBorder(BorderFactory.createLineBorder(Color.blue));
+		return box;
+	}
+	
+	private JPanel line(JComponent subA, JComponent subB, JComponent subC, JComponent subD)
+	{
+		JPanel box = new JPanel();
+		box.setLayout(new BoxLayout(box, BoxLayout.LINE_AXIS));
+		box.add(subA);
+		box.add(Box.createRigidArea(new Dimension(12,12)));
+		box.add(subB);
+		box.add(Box.createRigidArea(new Dimension(12,12)));
+		box.add(subC);
+		box.add(Box.createRigidArea(new Dimension(12,12)));
+		box.add(subD);
 		box.add(Box.createHorizontalGlue());
 //		box.setBorder(BorderFactory.createLineBorder(Color.blue));
 		return box;

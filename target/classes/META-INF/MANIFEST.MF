@@ -4,7 +4,7 @@ Bundle-Name: Enhancer
 Bundle-Version: 0.0.1
 Built-By: adamtreister
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1554403578006
+Bnd-LastModified: 1554751113749
 Bundle-Activator: org.cytoscape.enhancer.CyActivator
 Import-Package: javax.swing,javax.swing.border,org.cytoscape.applicati
  on;version="[3.7,4)",org.cytoscape.application.events;version="[3.7,4
@@ -12,8 +12,9 @@ Import-Package: javax.swing,javax.swing.border,org.cytoscape.applicati
  plication.swing.events;version="[3.7,4)",org.cytoscape.model;version=
  "[3.7,4)",org.cytoscape.service.util;version="[3.7,4)",org.cytoscape.
  task;version="[3.7,4)",org.cytoscape.util.swing;version="[3.7,4)",org
- .cytoscape.view.model;version="[3.7,4)",org.cytoscape.work;version="[
- 3.7,4)",org.osgi.framework;version="[1.5,2)"
+ .cytoscape.view.model;version="[3.7,4)",org.cytoscape.view.vizmap;ver
+ sion="[3.7,4)",org.cytoscape.work;version="[3.7,4)",org.osgi.framewor
+ k;version="[1.5,2)"
 Created-By: Apache Maven Bundle Plugin
 Tool: Bnd-1.15.0
 Build-Jdk: 1.8.0_171

@@ -56,6 +56,7 @@ public class EnhancerPanel extends JPanel implements CytoPanelComponent {
 	int lineHeight = 32;
 	Dimension dim = new Dimension(400, lineHeight);
 	Dimension dim4lines = new Dimension(400, 6*lineHeight);
+	Dimension dim12lines = new Dimension(400, 12*lineHeight);
 	Dimension introDim = new Dimension(400, 3*lineHeight);
 	Dimension numDimension = new Dimension(40, 30);
 	Dimension columnDimension = new Dimension(240, lineHeight);
@@ -104,7 +105,7 @@ JPanel makeIntro()
 		JPanel line = new JPanel();
 		setSizes(line, dim);
 		line.setLayout(new BoxLayout(line, BoxLayout.LINE_AXIS));
-		line.add(Box.createHorizontalStrut(40));
+		line.add(Box.createHorizontalStrut(80));
 		line.add(lab1);
 		line.add(lab2);
 //		line.add(lab3);
@@ -170,6 +171,7 @@ JPanel makeIntro()
 		categoryParentPanel.setBorder(BorderFactory.createEtchedBorder());
 		categoryParentPanel.setMinimumSize(dim4lines);
 		categoryParentPanel.setPreferredSize(dim4lines);
+		categoryParentPanel.setMaximumSize(dim12lines);
 		categoryParentPanel.setLayout(new BoxLayout(categoryParentPanel, BoxLayout.PAGE_AXIS));
 		categoryParentPanel.add(Box.createRigidArea(new Dimension(10,3)));
 		categoryParentPanel.add(makeHeader());
@@ -302,13 +304,8 @@ JPanel makeIntro()
 			ranges.append(minVal.getText()).append (",").append(maxVal.getText()).append ("\" ");
 			builder.append(ranges.toString());
 		}
+		builder.append("showlabels=\"false\" ");
 		return builder.toString();
-	}
-	
-	private String changeLastCommaToQuoteSpace(String attr) {
-		int idx = attr.lastIndexOf(",");
-		return idx < 0 ? "" : (attr.substring(0, idx) + "\" ");
-		
 	}
 	//--------------------------------------------------------------------
 	// util
@@ -353,6 +350,12 @@ JPanel makeIntro()
 		return box;
 	}
 
+	
+	private String changeLastCommaToQuoteSpace(String attr) {
+		int idx = attr.lastIndexOf(",");
+		return idx < 0 ? "" : (attr.substring(0, idx) + "\" ");
+		
+	}
 
 }
 

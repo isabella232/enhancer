@@ -122,7 +122,7 @@ public class EnhancerController implements CytoPanelComponentSelectedListener, S
 		return false;
 	}
 	// INCOMPLETE -- not setting the passthru mapping into the style 
-	public void enhance(String extracted) {
+	public void enhance(String extracted, List<String> colNames) {
 		
 		String spec = extracted;
 		System.out.println(spec);
@@ -136,7 +136,8 @@ public class EnhancerController implements CytoPanelComponentSelectedListener, S
 			col = nodeTable.getColumn(ENHANCER_NAME);
 		}
 		for (CyRow row : nodeTable.getAllRows())
-			row.set(ENHANCER_NAME, extracted);
+			if (rowHasValues(nodeTable, row, colNames)) 
+				row.set(ENHANCER_NAME, extracted);
 
 
 		// see VizMapPropertyBuilder ??
@@ -153,6 +154,18 @@ public class EnhancerController implements CytoPanelComponentSelectedListener, S
 //			NullCustomGraphics.getNullObject(), CG_RANGE,
 //			"NODE_CUSTOMGRAPHICS_1", "Node Image/Chart 1", CyNode.class);
 
+	private boolean rowHasValues(CyTable nodeTable, CyRow row, List<String> colNames )
+	{
+		for (String column : colNames)
+		{
+			CyColumn col = nodeTable.getColumn(column);
+			Class<?> c = col.getType();
+			Object d = row.get(column, c);
+			if (d == null)	return false;
+		}
+		return true;
+	}
+	
 	private VisualStyle getStyle()
 	{
 		// Now we cruise thru the list of node, then edge attributes looking for mappings.  Each mapping may potentially be a legend entry.

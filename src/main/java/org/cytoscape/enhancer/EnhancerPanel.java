@@ -220,7 +220,7 @@ JPanel makeIntro()
 		clearAll.addActionListener(clrAll);
 
 		doIt.addActionListener(new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) { controller.enhance(extract());  }
+			@Override public void actionPerformed(ActionEvent e) { controller.enhance(extract(), getColumnNames());  }
 		});
 		return (line(doIt, clearAll, adder));		//, newRing
 				
@@ -281,7 +281,15 @@ JPanel makeIntro()
 //  piechart: attributelist="Values" colorlist="contrasting" labellist="First,Second,Third,Fourth,Fifth"
 //    piechart: attributelist="a,b,c,d" colorlist="red,green,blue,yellow"
 
-    public String extract()
+	public List<String> getColumnNames()
+	{
+		List<String> strs = new ArrayList<String> ();
+		for (ColumnMapPane pane : categories)
+			strs.add(pane.getColumn());
+		return strs;
+		
+	}
+	public String extract()
 	{
 		StringBuilder builder = new StringBuilder("piechart: ");
 		// pull the data out of the GUI components

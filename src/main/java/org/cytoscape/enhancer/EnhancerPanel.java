@@ -43,13 +43,14 @@ public class EnhancerPanel extends JPanel implements CytoPanelComponent {
 	
 	public Component getComponent() 			{		return this;	}
 	public CytoPanelName getCytoPanelName() 	{		return CytoPanelName.WEST;	}
-	public String getTitle() 					{		return "Enhancer Panel";	}
+	public String getTitle() 					{		return "Enhanced Graphics";	}
 	public Icon getIcon() 						{		return null;	}
 
 	
 	JButton adder = new JButton("Add");
 	JButton newRing = new JButton("Add Ring");
 	JButton doIt = new JButton("Enhance");		
+	JButton link = new JButton("More...");		
 	JButton clearAll = new JButton("Clear");
 
 	List<ColumnMapPane> categories = new ArrayList<ColumnMapPane>();
@@ -60,6 +61,7 @@ public class EnhancerPanel extends JPanel implements CytoPanelComponent {
 	Dimension introDim = new Dimension(400, 3*lineHeight);
 	Dimension numDimension = new Dimension(40, 30);
 	Dimension columnDimension = new Dimension(240, lineHeight);
+	Dimension adderDimension = new Dimension(24, 24);
 	Dimension colorDimension = new Dimension(24, 24);
 	Dimension colorLabDimension = new Dimension(64, lineHeight);
 	Dimension rangeDimension = new Dimension(100, lineHeight);
@@ -95,16 +97,20 @@ JPanel makeIntro()
 }
 	JPanel makeHeader()
 	{
+		JButton adder = new JButton("+");
+		adder.addActionListener(addCategory);
 		JLabel lab1 = new JLabel("Column");
 		JLabel lab2 = new JLabel("Color");
 //		JLabel lab3 = new JLabel("Range");
-		LookAndFeelUtil.makeSmall(lab1,lab2);		//, lab3
+		LookAndFeelUtil.makeSmall(adder, lab1,lab2);		//, lab3
+		setSizes(adder, adderDimension);
 		setSizes(lab1, columnDimension);
 		setSizes(lab2, colorLabDimension);
 //		setSizes(lab3, rangeDimension);
 		JPanel line = new JPanel();
 		setSizes(line, dim);
 		line.setLayout(new BoxLayout(line, BoxLayout.LINE_AXIS));
+		line.add(adder);
 		line.add(Box.createHorizontalStrut(80));
 		line.add(lab1);
 		line.add(lab2);
@@ -150,6 +156,22 @@ JPanel makeIntro()
 		public String getColumn()	{ return "" + column.getSelectedItem(); }
 		public Color getCatColor()	{ return colorButton.getColor(); }
 	}
+	ActionListener addCategory = new ActionListener() {
+		@Override public void actionPerformed(ActionEvent e) 
+		{
+			addCategory(); 
+			setVisible(false);
+			setVisible(true);
+		}
+	};
+	ActionListener addRing = new ActionListener() {
+		@Override public void actionPerformed(ActionEvent e) 
+		{
+			addCategory(); 
+			setVisible(false);
+			setVisible(true);
+		}
+	};
 	
 	private void addCategory()	
 	{ 	
@@ -166,16 +188,7 @@ JPanel makeIntro()
 		
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		add(makeIntro());
-		categoryParentPanel = new JPanel();
-//		optionsPanel.setAlignmentX(0f);
-		categoryParentPanel.setBorder(BorderFactory.createEtchedBorder());
-		categoryParentPanel.setMinimumSize(dim4lines);
-		categoryParentPanel.setPreferredSize(dim4lines);
-		categoryParentPanel.setMaximumSize(dim12lines);
-		categoryParentPanel.setLayout(new BoxLayout(categoryParentPanel, BoxLayout.PAGE_AXIS));
-		categoryParentPanel.add(Box.createRigidArea(new Dimension(10,3)));
-		categoryParentPanel.add(makeHeader());
-		add(categoryParentPanel);
+		add(makeCategoriesPanel());
 		add(Box.createRigidArea(new Dimension(20, 8)));
 
 		JLabel label2 = new JLabel("Range can be optionally set to get normalized colors.");
@@ -192,24 +205,21 @@ JPanel makeIntro()
 		add(Box.createVerticalGlue());		
 	}
 
+	private Component makeCategoriesPanel() {
+		categoryParentPanel = new JPanel();
+//		optionsPanel.setAlignmentX(0f);
+		categoryParentPanel.setBorder(BorderFactory.createEtchedBorder());
+		categoryParentPanel.setMinimumSize(dim4lines);
+		categoryParentPanel.setPreferredSize(dim4lines);
+		categoryParentPanel.setMaximumSize(dim12lines);
+		categoryParentPanel.setLayout(new BoxLayout(categoryParentPanel, BoxLayout.PAGE_AXIS));
+		categoryParentPanel.add(Box.createRigidArea(new Dimension(10,3)));
+		categoryParentPanel.add(makeHeader());
+		return categoryParentPanel;
+	}
+
 	private JPanel makeButtonRow() {
 		//a row of buttons and their actions
-		ActionListener addCategory = new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) 
-			{
-				addCategory(); 
-				setVisible(false);
-				setVisible(true);
-			}
-		};
-		ActionListener addRing = new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) 
-			{
-				addCategory(); 
-				setVisible(false);
-				setVisible(true);
-			}
-		};
 		adder.addActionListener(addCategory);
 
 //		newRing.addActionListener(addRing);

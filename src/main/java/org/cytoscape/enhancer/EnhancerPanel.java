@@ -61,7 +61,7 @@ public class EnhancerPanel extends JPanel implements CytoPanelComponent {
 	Dimension introDim = new Dimension(400, 3*lineHeight);
 	Dimension numDimension = new Dimension(40, 30);
 	Dimension columnDimension = new Dimension(240, lineHeight);
-	Dimension adderDimension = new Dimension(24, 24);
+	Dimension adderDimension = new Dimension(36, 30);
 	Dimension colorDimension = new Dimension(24, 24);
 	Dimension colorLabDimension = new Dimension(64, lineHeight);
 	Dimension rangeDimension = new Dimension(100, lineHeight);
@@ -111,7 +111,7 @@ JPanel makeIntro()
 		setSizes(line, dim);
 		line.setLayout(new BoxLayout(line, BoxLayout.LINE_AXIS));
 		line.add(adder);
-		line.add(Box.createHorizontalStrut(80));
+		line.add(Box.createHorizontalStrut(10));
 		line.add(lab1);
 		line.add(lab2);
 //		line.add(lab3);
@@ -128,7 +128,7 @@ JPanel makeIntro()
 	}
 	
 
-	
+	//--------------------------------------------------------
 	class ColumnMapPane extends JPanel
 	{
 		JComboBox<String> column;
@@ -143,9 +143,6 @@ JPanel makeIntro()
 			column.setSize(columnDimension);
 			colorButton = new ColorMenuButton();
 			setSizes(colorButton,colorDimension); 
-			colorButton.setMinimumSize(colorDimension);
-			colorButton.setMaximumSize(colorDimension);
-			colorButton.setPreferredSize(colorDimension);
 			JPanel around = new JPanel();
 			around.add(colorButton);
 			setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -156,6 +153,7 @@ JPanel makeIntro()
 		public String getColumn()	{ return "" + column.getSelectedItem(); }
 		public Color getCatColor()	{ return colorButton.getColor(); }
 	}
+	//--------------------------------------------------------
 	ActionListener addCategory = new ActionListener() {
 		@Override public void actionPerformed(ActionEvent e) 
 		{
@@ -225,7 +223,7 @@ JPanel makeIntro()
 //		newRing.addActionListener(addRing);
 
 		ActionListener clrAll = new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) { resetOptionsPanel();  }
+			@Override public void actionPerformed(ActionEvent e) { clearCategories();  }
 		};
 		clearAll.addActionListener(clrAll);
 
@@ -270,7 +268,7 @@ JPanel makeIntro()
 			category.setEnabled(on);
 	}
 	
-	public void resetOptionsPanel()
+	public void clearCategories()
 	{
 		categoryParentPanel.removeAll();
 		categoryParentPanel.setVisible(false);

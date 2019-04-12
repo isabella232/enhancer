@@ -74,15 +74,19 @@ public class EnhancerController implements CytoPanelComponentSelectedListener, S
 		
 	public void scanNetwork() {	}
 	
-
-	public void setCurrentNetView(CyNetworkView newView)
-	{
-		if (newView == null) return;		// use ""
-//		if (newView.getSUID() == currentNetworkView.getSUID()) return;
-		currentNetworkView = newView;
-		enhancerPanel.enableControls(currentNetworkView != null);
-		
+	
+	private void ensureCategoryCompatibility() {
+		if (network == null)  return;		// don't clear list until a conflict is found
+		List<String> extant = enhancerPanel.getColumnNames();
+		List<String> networkColumns = getColumnNames();
+		for (String col : extant)
+		{
+			CyColumn c =  network.getDefaultNodeTable().getColumn(col);
+			if (c == null)
+				enhancerPanel.clearCategories();
+		}
 	}
+
 	//-------------------------------------------------------------------------------
 	private CyNetworkView currentNetworkView;
 	private boolean verbose = true;
@@ -151,7 +155,7 @@ public class EnhancerController implements CytoPanelComponentSelectedListener, S
 				registrar.getService(VisualMappingFunctionFactory.class, "(mapping.type=passthrough)");
 		VisualLexicon lex = registrar.getService(RenderingEngineManager.class).getDefaultVisualLexicon();
 
-// Set up the passthrough mapping
+// Set up the pass-through mapping
 
 		VisualProperty customGraphics = lex.lookup(CyNode.class, "NODE_CUSTOMGRAPHICS_1");
 		PassthroughMapping pMapping = 
@@ -188,29 +192,23 @@ public class EnhancerController implements CytoPanelComponentSelectedListener, S
 
 	}
 	
-	private void getMaps(VisualStyle style)
-	{
-		Collection<VisualMappingFunction<?, ?>> vizmapFns =  style.getAllVisualMappingFunctions();
-		for (VisualMappingFunction<?,?> fn : vizmapFns)
-		{
-			String mappingType = fn.toString();
-			if (mappingType.contains("Passthrough")) continue;
-			VisualProperty<?> vp = fn.getVisualProperty();
-			if (vp.toString().contains("EDGE")) continue;
-//			candidates.add(new LegendCandidate(fn));
-		}
-	}
 	//-------------------------------------------------------------------------------
 	@Override
 	public void handleEvent(SetCurrentNetworkEvent e) {
 
-		network = e.getNetwork();
-		enhancerPanel.enableControls(network != null);
-//		if (cyApplicationManager != null)
-//		{
-//			networkView = cyApplicationManager.getCurrentNetworkView();
-////			scanNetwork();
-//		}
+		network = cyApplicationManager.getCurrentNetwork();
+		networkView = cyApplicationManager.getCurrentNetworkView();
+		setCurrentNetView(networkView);
+	}
+
+	public void setCurrentNetView(CyNetworkView newView)
+	{
+		if (newView == null) return;		// use ""
+//		if (newView.getSUID() == currentNetworkView.getSUID()) return;
+		currentNetworkView = newView;
+		currentNetworkView.getModel();
+		enhancerPanel.enableControls(currentNetworkView != null);
+		ensureCategoryCompatibility();
 	}
 	
 }

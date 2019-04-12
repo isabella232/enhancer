@@ -3,10 +3,14 @@
 This is the front end to a package called EnhancedGraphics, which adds the 
 ability to display charts for each node in the network.
 
-The documentation for this can be found [here]
+!(screen.png)
+Simple documentation for this can be found at the AppStore page:
 (http://apps.cytoscape.org/apps/enhancedgraphics )
 
-## ONLY PIE CHARTS ARE IMPLEMENTED
+More complete explanation of the arguments is available from RBVI
+(http://www.rbvi.ucsf.edu/cytoscape/utilities3/enhancedcg.shtml)
+
+### ONLY PIE CHARTS ARE IMPLEMENTED
 
 The first choice box offering multiple graph types is *ignored* in this early release.
 Pie charts are rendered *regardless of your setting.*

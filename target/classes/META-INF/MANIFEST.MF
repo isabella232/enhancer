@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-SymbolicName: org.cytoscape.enhancer
 Bundle-Name: Enhancer
-Bundle-Version: 0.0.2
+Bundle-Version: 0.1.0
 Built-By: adamtreister
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1555020200831
+Bnd-LastModified: 1555093998068
 Bundle-Activator: org.cytoscape.enhancer.CyActivator
 Import-Package: javax.swing,javax.swing.border,org.cytoscape.applicati
  on;version="[3.7,4)",org.cytoscape.application.events;version="[3.7,4

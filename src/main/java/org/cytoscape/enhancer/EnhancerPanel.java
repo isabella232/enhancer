@@ -60,10 +60,11 @@ public class EnhancerPanel extends JPanel implements CytoPanelComponent {
 	Dimension dim12lines = new Dimension(400, 12*lineHeight);
 	Dimension introDim = new Dimension(400, 3*lineHeight);
 	Dimension numDimension = new Dimension(40, 30);
-	Dimension columnDimension = new Dimension(240, lineHeight);
+	Dimension columnDimension = new Dimension(180, lineHeight);
+	Dimension columnLabDimension = new Dimension(145, lineHeight);
 	Dimension adderDimension = new Dimension(36, 30);
 	Dimension colorDimension = new Dimension(24, 24);
-	Dimension colorLabDimension = new Dimension(64, lineHeight);
+	Dimension colorLabDimension = new Dimension(60, lineHeight);
 	Dimension rangeDimension = new Dimension(100, lineHeight);
 	
 	JComboBox<String> graphType;
@@ -100,21 +101,25 @@ JPanel makeIntro()
 		JButton adder = new JButton("+");
 		adder.addActionListener(addCategory);
 		JLabel lab1 = new JLabel("Column");
-		JLabel lab2 = new JLabel("Color");
-//		JLabel lab3 = new JLabel("Range");
-		LookAndFeelUtil.makeSmall(adder, lab1,lab2);		//, lab3
+		JLabel lab2 = new JLabel("Min Color");
+		JLabel lab3 = new JLabel("Max Color");
+		LookAndFeelUtil.makeSmall(adder, lab1,lab2, lab3);	
 		setSizes(adder, adderDimension);
-		setSizes(lab1, columnDimension);
+		setSizes(lab1, columnLabDimension);
 		setSizes(lab2, colorLabDimension);
-//		setSizes(lab3, rangeDimension);
+		setSizes(lab3, colorLabDimension);
+		JPanel aroundlab2 = new JPanel();
+		aroundlab2.add(lab2);
+		JPanel aroundlab3 = new JPanel();
+		aroundlab3.add(lab3);
 		JPanel line = new JPanel();
 		setSizes(line, dim);
 		line.setLayout(new BoxLayout(line, BoxLayout.LINE_AXIS));
 		line.add(adder);
-		line.add(Box.createHorizontalStrut(10));
+		//line.add(Box.createHorizontalStrut(10));
 		line.add(lab1);
-		line.add(lab2);
-//		line.add(lab3);
+		line.add(aroundlab2); line.add(Box.createHorizontalStrut(2));
+		line.add(aroundlab3); line.add(Box.createHorizontalStrut(2));
 		return line;
 		
 	}
@@ -133,25 +138,34 @@ JPanel makeIntro()
 	{
 		JComboBox<String> column;
 		ColorMenuButton colorButton;
-		String[] colNames = { "Name", "Age", "JurkatScore", "HEKScore" } ;
+		ColorMenuButton colorButton2;
+		String[] colNames = { "Temp", "Initialization", "Values" } ; 
 			
 		private ColumnMapPane(List<String> columNameList)
 		{
 			setSizes(this, dim);
 			column = new JComboBox<String>(columNameList.toArray(colNames)); 
-			column.setMaximumRowCount(40);
-			column.setSize(columnDimension);
+			//column.setMaximumRowCount(40);
+			//column.setSize(columnDimension);
+			setSizes(column, columnDimension);
 			colorButton = new ColorMenuButton();
 			setSizes(colorButton,colorDimension); 
+			colorButton.setColor(Color.white);
+			colorButton2 = new ColorMenuButton();
+			setSizes(colorButton2,colorDimension); 
+			colorButton2.setColor(Colors.defColorFromIndex(categories.size()));
 			JPanel around = new JPanel();
 			around.add(colorButton);
+			JPanel around2 = new JPanel();
+			around2.add(colorButton2);
 			setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-			add(column);	add(Box.createHorizontalStrut(20));
-			add(around);	add(Box.createHorizontalStrut(20));
-		}
+			add(column);	//add(Box.createHorizontalStrut(2));
+			add(around);	add(Box.createHorizontalStrut(2));
+			add(around2);	add(Box.createHorizontalStrut(2));
+	}
 		
 		public String getColumn()	{ return "" + column.getSelectedItem(); }
-		public Color getCatColor()	{ return colorButton.getColor(); }
+		public String getCatColor()	{ return "down:"+Colors.toString(colorButton.getColor()) + ",zero:"+Colors.toString(colorButton.getColor()) + ",up:" + Colors.toString(colorButton2.getColor()); }
 	}
 	//--------------------------------------------------------
 	ActionListener addCategory = new ActionListener() {
@@ -233,8 +247,8 @@ JPanel makeIntro()
 		return (line(doIt, clearAll, adder));		//, newRing
 				
 	}
-	JTextField minVal = new JTextField();
-	JTextField maxVal = new JTextField();
+	JTextField minVal = new JTextField("0");
+	JTextField maxVal = new JTextField("1");
 	JLabel lab1 = new JLabel("Min:");
 	JLabel lab2 = new JLabel("Max:");
 
@@ -306,8 +320,8 @@ JPanel makeIntro()
 		for (ColumnMapPane pane : categories)
 		{
 			attributes.append(pane.getColumn()).append(",");
-			Color c = pane.getCatColor();
-			colors.append(Colors.toString(c)).append(",");
+			String c = pane.getCatColor();
+			colors.append(c).append(";");
 		}
 		String attr = changeLastCommaToQuoteSpace(attributes.toString());
 		String colrs = changeLastCommaToQuoteSpace(colors.toString());
@@ -320,7 +334,20 @@ JPanel makeIntro()
 			ranges.append(minVal.getText()).append (",").append(maxVal.getText()).append ("\" ");
 			builder.append(ranges.toString());
 		}
+		//double slice = (double) Math.round((1/categories.size())* Math.pow(10,  3)) / 3;
+		double slice = 1.0/categories.size() * 1.0;
+		StringBuilder repSlices = (new StringBuilder()).append("valuelist=\"");
+		for (ColumnMapPane pane : categories) {
+			repSlices.append(Double.toString(slice));
+			repSlices.append(",");
+		}
+		repSlices.toString().substring(0, repSlices.length()-1);
+		builder.append(changeLastCommaToQuoteSpace(repSlices.toString()));
 		builder.append("showlabels=\"false\" ");
+		builder.append("arcstart=\"90\" ");
+		builder.append("scale=\"1.0\" ");
+		builder.append("position=\"center\" ");
+		builder.append("showlabels=\"FALSE\" ");
 		return builder.toString();
 	}
 	//--------------------------------------------------------------------
@@ -368,7 +395,7 @@ JPanel makeIntro()
 
 	
 	private String changeLastCommaToQuoteSpace(String attr) {
-		int idx = attr.lastIndexOf(",");
+		int idx = Math.max(attr.lastIndexOf(","), attr.lastIndexOf(";"));
 		return idx < 0 ? "" : (attr.substring(0, idx) + "\" ");
 		
 	}

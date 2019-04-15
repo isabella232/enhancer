@@ -7,7 +7,7 @@ public class Colors
 	public static String toString(Color inColor)
 	{
 		if (inColor == null) return("#000000");
-		return (String.format("#%x%x%x", inColor.getRed(),inColor.getGreen(),inColor.getBlue()));
+		return (String.format("#%02X%02X%02X", inColor.getRed(),inColor.getGreen(),inColor.getBlue()));
 	}
 	public static Color colorFromString(final String sv)		// reads 0xff1100 or #ff1100 or ff1100
 	{
@@ -41,5 +41,14 @@ public class Colors
 		"#2C0058", "#17002E", "#FFE4FF", "#FFADFF", "#FF86FF", "#FF48FF", "#FF00FF", "#D600D6", "#AC00AC",
 		"#820082", "#580058", "#2E002E", "#FFE4F2", "#FFADD6", "#FF86C3", "#FF48A4", "#FF007F", "#D6006B",
 		"#AC0056", "#820041", "#58002C", "#2E0017" };
+	
+	public static Color defColorFromIndex(int i) { 	
+		return colorFromString(defColors[i % defColors.length]);  
+	}
+	static private String defColors[] = { // from brewer palette
+	"#3182bd", "#e6550d", "#756bb1", "#31a354"};
+	
+//   ,"#4393C3","#D6604D", "#4393C3","#D6604D",
+//    "#4393C3","#D6604D", "#4393C3","#D6604D"};
 	public static Color kUnfilled = new Color(0x00ffffff, true);
 }

@@ -134,7 +134,7 @@ public class ColorMenuButton extends JButton implements MouseListener, ColorMenu
 		protected ColorMenuListener fOwner;
 		public void setOwner(ColorMenuListener cml)	{ fOwner = cml;	}
 //		public static ColorMenu getInstance()	{ return sColorMenu;	}
-		private int rows = 13, cols = 10;
+		private int rows = 13, cols = 10; //TODO: change to match provided colors
 		private ColorMenu()
 		{
 			setBorder(new EmptyBorder(0, 1, 1, 1));
